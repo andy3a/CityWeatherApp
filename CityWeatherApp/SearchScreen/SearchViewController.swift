@@ -8,6 +8,7 @@
 import UIKit
 import MapKit
 import RxSwift
+import AVFoundation
 // import Combine
 
 class SearchViewController: UIViewController {
@@ -139,8 +140,9 @@ class SearchViewController: UIViewController {
         }
     }
     
-    func showAlert(error: Error) {
-        let alert = UIAlertController(title: "Warning", message: error.localizedDescription, preferredStyle: .alert)
+    func showAlert(error: String) {
+
+        let alert = UIAlertController(title: "Warning", message: error, preferredStyle: .alert)
 
         let cancelAction = UIAlertAction(title: "OK", style: .destructive) { _ in
             DispatchQueue.main.async {
@@ -223,7 +225,7 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
             let search = MKLocalSearch(request: searchRequest)
             search.start { (response, error) in
                 if let error = error {
-                    self.showAlert(error: error)
+                    self.showAlert(error: error.localizedDescription)
                 } else {
                     
                     guard let coordinate = response?.mapItems[0].placemark.coordinate else {return}
@@ -253,6 +255,12 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
 extension SearchViewController: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchText.containsSpecialCharacter {
+            showAlert(error: "Special chars are forbidden")
+            
+            
+        }
+        
         if searchText == "" {
             viewModel.searchResults = []
             self.resultsTableView.reloadData()
@@ -271,4 +279,12 @@ extension SearchViewController: MKLocalSearchCompleterDelegate {
         viewModel.searchResults = completer.results
         resultsTableView.reloadData()
     }
+}
+
+extension String {
+   var containsSpecialCharacter: Bool {
+      let regex = ".*[^A-Za-z0-9].*"
+      let testString = NSPredicate(format:"SELF MATCHES %@", regex)
+      return testString.evaluate(with: self)
+   }
 }

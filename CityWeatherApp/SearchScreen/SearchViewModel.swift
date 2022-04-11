@@ -9,7 +9,6 @@ import Foundation
 import MapKit
 import RxSwift
 
-
 class SearchViewModel {
     
     let viewController: SearchViewController!
@@ -45,7 +44,7 @@ class SearchViewModel {
         
         _ =  Networking.shared.rxError
             .subscribe( onNext: { error in
-                self.viewController.showAlert(error: error)
+                self.viewController.showAlert(error: error.localizedDescription)
             })
     }
     
