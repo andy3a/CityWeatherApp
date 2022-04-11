@@ -1,0 +1,11 @@
+disabled_rules: # rule identifiers to exclude from running
+  # - colon
+  - comma
+  # - control_statement
+  - variable_name
+  - force_cast
+  - large_tuple
+  - notification_center_detachment
+  - nesting
+  - function_parameter_count
+  - trailing_whitespace # <---------
